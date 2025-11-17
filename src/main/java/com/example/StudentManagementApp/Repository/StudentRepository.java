@@ -1,6 +1,8 @@
-package com.example.StudentManagementApp;
+package com.example.StudentManagementApp.Repository;
 
+import com.example.StudentManagementApp.Model.Student;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +27,7 @@ public class StudentRepository {
         studentDb.put(student.getId(),student);
         return "Student added successfully";
     }
+
 
     public String updateAge(int id, int age) {
         if(!studentDb.containsKey(id)) {
