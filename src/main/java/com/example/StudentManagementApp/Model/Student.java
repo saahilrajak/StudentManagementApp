@@ -12,8 +12,16 @@ import lombok.Setter;
 public class Student {
     private int id; // primary key
     private String name;
-    private int age;
     private int marks;
+    private int age;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
 
 //    public int getId() {
 //        return id;

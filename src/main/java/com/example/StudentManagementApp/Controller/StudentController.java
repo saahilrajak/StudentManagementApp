@@ -1,12 +1,13 @@
-
 package com.example.StudentManagementApp.Controller;
 
+import com.example.StudentManagementApp.Exceptions.NotAddedSuccessfully;
+import com.example.StudentManagementApp.Exceptions.StudentNotFoundException;
 import com.example.StudentManagementApp.Model.Student;
 import com.example.StudentManagementApp.Services.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/student")
@@ -21,41 +22,69 @@ public class StudentController {
     }
 
     @GetMapping
-    public Student getStudentById(@RequestParam("id") int id) {
-        return studentService.getStudentById(id);
+    public ResponseEntity getStudentById(@RequestParam("id") int id) {
+        try {
+            return new ResponseEntity(studentService.getStudentById(id), HttpStatus.OK);
+        }
+        catch (StudentNotFoundException e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping
-    public String addStudent(@RequestBody Student student) {
-        return studentService.addStudent(student);
+    public ResponseEntity addStudent(@RequestBody Student student) {
+        try {
+            return new ResponseEntity(studentService.addStudent(student), HttpStatus.CREATED);
+        }
+        catch (NotAddedSuccessfully e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.ALREADY_REPORTED);
+        }
     }
 
     @GetMapping("/{id}")
-    public Student getStudentByIdPath(@PathVariable("id") int id) {
-        return studentService.getStudentById(id);
+    public ResponseEntity getStudentByIdPath(@PathVariable("id") int id) {
+        try {
+            return new ResponseEntity(studentService.getStudentById(id), HttpStatus.OK);
+        }
+        catch (StudentNotFoundException e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PutMapping("/id/{id}/age/{age}")
     public String updateAge(@PathVariable("id") int id,
-                            @PathVariable("age") int age) {
-        return studentService.updateAge(id, age);
+                                    @PathVariable("age") int age) {
+       return studentService.updateAge(id,age);
     }
 
     @PutMapping
-    public String updateAgeByRequestParam(@RequestParam("id") int id,
-                                          @RequestParam("age") int age) {
-        return studentService.updateAge(id,age);
+    public ResponseEntity updateAgeByRequestParam(@RequestParam("id") int id,
+                                                  @RequestParam("age") int age) {
+        try {
+            return new ResponseEntity(studentService.updateAge(id, age), HttpStatus.OK);
+        }
+        catch (StudentNotFoundException e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
-    // Get the list of all students
     @GetMapping("/all")
-    public List<Student> getAllStudents() {
-        return studentService.getAllStudents();
+    public ResponseEntity getAllStudents() {
+        try {
+            return new ResponseEntity(studentService.getAllStudents(), HttpStatus.OK);
+        }
+        catch (Exception e) {
+            return new ResponseEntity("No students found", HttpStatus.NOT_FOUND);
+        }
     }
 
-    // Delete a student
     @DeleteMapping
-    public String deleteStudent(@RequestParam("id") int id) {
-        return studentService.deleteStudent(id);
+    public ResponseEntity deleteStudent(@RequestParam("id") int id) {
+        try {
+            return new ResponseEntity(studentService.deleteStudent(id), HttpStatus.OK);
+        }
+        catch (StudentNotFoundException e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 }

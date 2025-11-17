@@ -1,5 +1,6 @@
 package com.example.StudentManagementApp.Services;
 
+import com.example.StudentManagementApp.Exceptions.NotAddedSuccessfully;
 import com.example.StudentManagementApp.Exceptions.StudentNotFoundException;
 import com.example.StudentManagementApp.Repository.StudentRepository;
 import com.example.StudentManagementApp.Model.Student;
@@ -16,18 +17,24 @@ public class StudentService {
 
     public Student getStudentById(int id) {
         Student student = studentRepository.getStudentById(id);
-        if(student == null){
-            throw new StudentNotFoundException("Student with Id" + id + "Not found");
+        if (student == null) {
+            throw new StudentNotFoundException("Student with id " + id + " not found.");
         }
-        return studentRepository.getStudentById(id);
+        return student;
     }
 
     public String addStudent(Student student) {
-        return studentRepository.addStudent(student);
+        String result = studentRepository.addStudent(student);
+
+        if (result.equals("Student exist")) {
+            throw new NotAddedSuccessfully("Student already exists.");
+        }
+
+        return result;
     }
 
     public String updateAge(int id, int age) {
-        return studentRepository.updateAge(id, age);
+        return studentRepository.updateAge(id,age);
     }
 
     public List<Student> getAllStudents() {
@@ -35,6 +42,11 @@ public class StudentService {
     }
 
     public String deleteStudent(int id) {
-        return studentRepository.deleteStudent(id);
+        String result = studentRepository.deleteStudent(id);
+
+        if (result.equals("Invalid id")) {
+            throw new StudentNotFoundException("Student with id " + id + " not found.");
+        }
+        return result;
     }
 }
